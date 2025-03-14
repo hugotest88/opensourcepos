@@ -28,7 +28,12 @@ jobs:
       - php/install-packages
       - run:
           name: Run PHPUnit tests
-          command: ./vendor/bin/phpunit --configuration phpunit.xml
+          command: |
+            if [ ! -f tests/phpunit.xml ]; then
+              echo "phpunit.xml file not found in the tests directory!"
+              exit 1
+            fi
+            ./vendor/bin/phpunit --configuration tests/phpunit.xml
   deploy:
     docker:
       - image: cimg/base:stable
