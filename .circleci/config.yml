@@ -4,7 +4,6 @@ orbs:
   php: circleci/php@1
 jobs:
   build-node:
-    # Build node project
     executor: node/default
     steps:
       - checkout
@@ -15,7 +14,6 @@ jobs:
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
       - run:
           name: Copy artifacts
           command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
@@ -23,21 +21,23 @@ jobs:
           path: ~/artifacts
           destination: node-build
   test-php:
-    # Install php packages and run tests
     docker:
       - image: cimg/php:8.2-node
     steps:
       - checkout
       - php/install-packages
       - run:
-          name: run tests
-          command: ./vendor/bin/phpunit
+          name: Run PHPUnit tests
+          command: |
+            if [ ! -f system/Test/bootstrap.php ]; then
+              echo "Bootstrap file not found!"
+              exit 1
+            fi
+            ./vendor/bin/phpunit --bootstrap system/Test/bootstrap.php
   deploy:
-    # This is an example deploy job, not actually used by the workflow
     docker:
       - image: cimg/base:stable
     steps:
-      # Replace this with steps to deploy to users
       - run:
           name: deploy
           command: '#e.g. ./deploy.sh'
@@ -51,6 +51,3 @@ workflows:
           requires:
             - test-php
       - test-php
-    # - deploy:
-    #     requires:
-    #       - build-node
