@@ -28,12 +28,7 @@ jobs:
       - php/install-packages
       - run:
           name: Run PHPUnit tests
-          command: |
-            if [ ! -f system/Test/bootstrap.php ]; then
-              echo "Bootstrap file not found!"
-              exit 1
-            fi
-            ./vendor/bin/phpunit --bootstrap system/Test/bootstrap.php
+          command: ./vendor/bin/phpunit --configuration phpunit.xml
   deploy:
     docker:
       - image: cimg/base:stable
