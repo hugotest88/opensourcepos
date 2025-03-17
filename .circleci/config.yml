@@ -1,53 +1,17 @@
 version: 2.1
-orbs:
-  node: circleci/node@5
-  php: circleci/php@1
 jobs:
-  build-node:
-    executor: node/default
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          command: npm run build
-      - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
-      - run:
-          name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-      - store_artifacts:
-          path: ~/artifacts
-          destination: node-build
-  test-php:
-    docker:
-      - image: cimg/php:8.2-node
-    steps:
-      - checkout
-      - php/install-packages
-      - run:
-          name: Run PHPUnit tests
-          command: |
-            if [ ! -f tests/phpunit.xml ]; then
-              echo "phpunit.xml file not found in the tests directory!"
-              exit 1
-            fi
-            ./vendor/bin/phpunit --configuration tests/phpunit.xml
-  deploy:
+  hello-world:
     docker:
       - image: cimg/base:stable
     steps:
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
-      - run:
-          name: found github actions config
-          command: ':'
+          name: Print Hello World
+          command: echo "Hello, World!"
 workflows:
-  build-and-test:
+  version: 2
+  hello-world-workflow:
     jobs:
-      - build-node:
-          requires:
-            - test-php
-      - test-php
+      - hello-world:
+          filters:
+            branches:
+              only: main
