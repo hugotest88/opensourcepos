@@ -1,0 +1,60 @@
+version: 2.1
+
+orbs:
+  php: circleci/php@1.1
+
+jobs:
+  build-and-test:
+    parameters:
+      php-version:
+        type: string
+    docker:
+      - image: cimg/php:<< parameters.php-version >>
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ospos
+          MYSQL_USER: ospos
+          MYSQL_PASSWORD: ospos
+
+    steps:
+      - checkout
+
+      - php/install-packages
+
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo "APP_ENV=testing" > .env
+            echo "database.default.hostname=127.0.0.1" >> .env
+            echo "database.default.database=ospos" >> .env
+            echo "database.default.username=ospos" >> .env
+            echo "database.default.password=ospos" >> .env
+
+      - run:
+          name: Wait for MySQL
+          command: |
+            dockerize -wait tcp://localhost:3306 -timeout 1m
+
+      - run:
+          name: Run Database Migrations
+          command: |
+            php spark migrate --all
+
+      - run:
+          name: Run Tests
+          command: |
+            ./vendor/bin/phpunit
+
+      - run:
+          name: Run PHP CodeSniffer
+          command: |
+            ./vendor/bin/phpcs --standard=PSR12 app/
+
+workflows:
+  test-deploy:
+    jobs:
+      - build-and-test:
+          matrix:
+            parameters:
+              php-version: ["8.1", "8.2"] 
