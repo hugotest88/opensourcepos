@@ -74,10 +74,18 @@ jobs:
             // Load framework paths from composer
             require __DIR__ . '/vendor/autoload.php';
             
+            // Set up paths
+            $paths = new \Config\Paths();
+            $paths->systemDirectory = __DIR__ . '/vendor/codeigniter4/framework/system';
+            $paths->appDirectory = __DIR__ . '/app';
+            $paths->writableDirectory = __DIR__ . '/writable';
+            $paths->testsDirectory = __DIR__ . '/tests';
+            $paths->viewDirectory = __DIR__ . '/app/Views';
+            
             // Ensure the current directory is pointing to the front controller's directory
             chdir(__DIR__);
             
-            $app = new \CodeIgniter\CodeIgniter();
+            $app = new \CodeIgniter\CodeIgniter($paths);
             $app->initialize();
             
             $console = new \CodeIgniter\CLI\Console($app);
