@@ -10,6 +10,8 @@ jobs:
         type: string
     docker:
       - image: cimg/php:<< parameters.php-version >>
+        environment:
+          CI_ENVIRONMENT: testing
       - image: cimg/mysql:8.0
         environment:
           MYSQL_ROOT_PASSWORD: root
@@ -19,6 +21,13 @@ jobs:
 
     steps:
       - checkout
+
+      # Install required PHP extensions
+      - run:
+          name: Install PHP Extensions
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y php-mysql php-intl php-curl php-xml php-mbstring
 
       # Update composer to latest version
       - run:
@@ -63,36 +72,7 @@ jobs:
             mkdir -p writable/logs
             mkdir -p writable/session
             chmod -R 777 writable
-            # Create custom spark runner
-            cat > spark_ci \<< 'EOL'
-            #!/usr/bin/env php
-            <?php
-            
-            define('ENVIRONMENT', 'testing');
-            define('FCPATH', __DIR__ . '/public/');
-            define('SYSTEMPATH', __DIR__ . '/vendor/codeigniter4/framework/system/');
-            define('APPPATH', __DIR__ . '/app/');
-            define('ROOTPATH', __DIR__ . '/');
-            
-            // Load framework paths from composer
-            require __DIR__ . '/vendor/autoload.php';
-            
-            // Ensure the current directory is pointing to the front controller's directory
-            chdir(__DIR__);
-            
-            // Create Paths object
-            $paths = new \CodeIgniter\Config\Paths();
-            $paths->systemDirectory = SYSTEMPATH;
-            $paths->appDirectory = APPPATH;
-            $paths->writableDirectory = ROOTPATH . 'writable';
-            
-            $app = new \CodeIgniter\CodeIgniter($paths);
-            $app->initialize();
-            
-            $console = new \CodeIgniter\CLI\Console($app);
-            $console->run();
-            EOL
-            chmod +x spark_ci
+            chmod +x spark
 
       - run:
           name: Wait for MySQL
@@ -102,7 +82,7 @@ jobs:
       - run:
           name: Run Database Migrations
           command: |
-            php -d display_errors=1 ./spark_ci migrate --all
+            php spark migrate --all
 
       - run:
           name: Run Tests
