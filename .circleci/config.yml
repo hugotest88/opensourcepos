@@ -57,6 +57,25 @@ jobs:
             sed -i 's/database.default.password = .*/database.default.password = ospos/' .env
 
       - run:
+          name: Setup CodeIgniter
+          command: |
+            mkdir -p writable/cache
+            mkdir -p writable/logs
+            mkdir -p writable/session
+            chmod -R 777 writable
+            cp spark spark.php
+            echo "<?php
+            define('ENVIRONMENT', 'testing');
+            define('FCPATH', __DIR__ . '/public/');
+            define('ROOTPATH', __DIR__ . '/');
+            define('SYSTEMPATH', __DIR__ . '/vendor/codeigniter4/framework/system/');
+            define('APPPATH', __DIR__ . '/app/');
+            define('SUPPORTPATH', __DIR__ . '/vendor/codeigniter4/framework/system/');
+            require FCPATH . '../vendor/autoload.php';
+            require SYSTEMPATH . 'Config/DotEnv.php';
+            (new CodeIgniter\Config\DotEnv(ROOTPATH))->load();" > preload.php
+
+      - run:
           name: Wait for MySQL
           command: |
             dockerize -wait tcp://localhost:3306 -timeout 1m
@@ -64,7 +83,7 @@ jobs:
       - run:
           name: Run Database Migrations
           command: |
-            php spark migrate --all
+            php -d display_errors=1 spark migrate --all
 
       - run:
           name: Run Tests
