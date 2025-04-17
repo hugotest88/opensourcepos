@@ -64,7 +64,8 @@ jobs:
             mkdir -p writable/session
             chmod -R 777 writable
             # Create custom spark runner
-            echo "#!/usr/bin/env php
+            cat > spark_ci << 'EOL'
+            #!/usr/bin/env php
             <?php
             
             define('ENVIRONMENT', 'testing');
@@ -76,11 +77,12 @@ jobs:
             // Ensure the current directory is pointing to the front controller's directory
             chdir(__DIR__);
             
-            $app = new CodeIgniter\CodeIgniter();
+            $app = new \CodeIgniter\CodeIgniter();
             $app->initialize();
             
-            $console = new CodeIgniter\CLI\Console($app);
-            $console->run();" > spark_ci
+            $console = new \CodeIgniter\CLI\Console($app);
+            $console->run();
+            EOL
             chmod +x spark_ci
 
       - run:
