@@ -1,5 +1,5 @@
 <p align="center"><img src="https://raw.githubusercontent.com/opensourcepos/opensourcepos/master/branding/emblem.svg" alt="Open Source Point of Sale Logo" width="auto" height="200"></p>
-<h3 align="center">Open Source Point of Sale</h3>
+<h3 align="center">Open Source Point of Sale</h3> 
 
 <p align="center">
   <a href="#-introduction">Introduction</a> · <a href="#-live-demo">Demo</a> · <a href="#-installation">Installation</a> · 
