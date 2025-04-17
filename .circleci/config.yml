@@ -64,7 +64,7 @@ jobs:
             mkdir -p writable/session
             chmod -R 777 writable
             # Create custom spark runner
-            cat > spark_ci << 'EOL'
+            cat > spark_ci \<< 'EOL'
             #!/usr/bin/env php
             <?php
             
