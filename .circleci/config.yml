@@ -66,19 +66,21 @@ jobs:
             # Create custom spark runner
             echo "#!/usr/bin/env php
             <?php
+            
             define('ENVIRONMENT', 'testing');
             define('FCPATH', __DIR__ . '/public/');
-            define('ROOTPATH', __DIR__ . '/');
-            define('SYSTEMPATH', __DIR__ . '/vendor/codeigniter4/framework/system/');
-            define('APPPATH', __DIR__ . '/app/');
-            define('SUPPORTPATH', __DIR__ . '/vendor/codeigniter4/framework/system/');
             
+            // Load framework paths from composer
             require __DIR__ . '/vendor/autoload.php';
             
-            \$app = require __DIR__ . '/vendor/codeigniter4/framework/system/bootstrap.php';
+            // Ensure the current directory is pointing to the front controller's directory
+            chdir(__DIR__);
             
-            \$console = new CodeIgniter\CLI\Console(\$app);
-            \$console->run();" > spark_ci
+            $app = new CodeIgniter\CodeIgniter();
+            $app->initialize();
+            
+            $console = new CodeIgniter\CLI\Console($app);
+            $console->run();" > spark_ci
             chmod +x spark_ci
 
       - run:
