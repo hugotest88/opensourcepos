@@ -70,17 +70,21 @@ jobs:
             
             define('ENVIRONMENT', 'testing');
             define('FCPATH', __DIR__ . '/public/');
+            define('SYSTEMPATH', __DIR__ . '/vendor/codeigniter4/framework/system/');
+            define('APPPATH', __DIR__ . '/app/');
+            define('ROOTPATH', __DIR__ . '/');
             
             // Load framework paths from composer
             require __DIR__ . '/vendor/autoload.php';
             
-            // Set up paths
-            $paths = SYSTEMPATH . 'Config/Paths.php';
-            require $paths;
-            $paths = new \CodeIgniter\Config\Paths();
-            
             // Ensure the current directory is pointing to the front controller's directory
             chdir(__DIR__);
+            
+            // Create Paths object
+            $paths = new \CodeIgniter\Config\Paths();
+            $paths->systemDirectory = SYSTEMPATH;
+            $paths->appDirectory = APPPATH;
+            $paths->writableDirectory = ROOTPATH . 'writable';
             
             $app = new \CodeIgniter\CodeIgniter($paths);
             $app->initialize();
