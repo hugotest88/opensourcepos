@@ -75,12 +75,9 @@ jobs:
             require __DIR__ . '/vendor/autoload.php';
             
             // Set up paths
-            $paths = new \Config\Paths();
-            $paths->systemDirectory = __DIR__ . '/vendor/codeigniter4/framework/system';
-            $paths->appDirectory = __DIR__ . '/app';
-            $paths->writableDirectory = __DIR__ . '/writable';
-            $paths->testsDirectory = __DIR__ . '/tests';
-            $paths->viewDirectory = __DIR__ . '/app/Views';
+            $paths = SYSTEMPATH . 'Config/Paths.php';
+            require $paths;
+            $paths = new \CodeIgniter\Config\Paths();
             
             // Ensure the current directory is pointing to the front controller's directory
             chdir(__DIR__);
