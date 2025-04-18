@@ -10,8 +10,6 @@ jobs:
         type: string
     docker:
       - image: cimg/php:<< parameters.php-version >>
-        environment:
-          CI_ENVIRONMENT: testing
       - image: cimg/mysql:8.0
         environment:
           MYSQL_ROOT_PASSWORD: root
@@ -21,13 +19,6 @@ jobs:
 
     steps:
       - checkout
-
-      # Install required PHP extensions
-      - run:
-          name: Install PHP Extensions
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y php-mysql php-intl php-curl php-xml php-mbstring
 
       # Update composer to latest version
       - run:
