@@ -32,7 +32,7 @@ The features include:
 - Barcode generation and printing
 - Database of customers and suppliers
 - Multiuser with permission control
-- Reporting on sales, orders, expenses, inventory status and more
+- Reporting on sales, orders, expenses, inventory status and more 
 - Receivings
 - Gift cards
 - Rewards
