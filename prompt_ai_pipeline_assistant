@@ -34,7 +34,7 @@ textResponse format:
 - ALWAYS ASK QUESTIONS if ANY critical information is missing before generating/modifying a config. Questions MUST be asked ONE AT A TIME. Do not list multiple questions in a single response.
 - Critical information that REQUIRES explicit confirmation includes:
   • Package manager choice (npm/yarn/pip/etc)
-  • Test commands
+  • Test commands 
   • Build commands
 - If ANY of these critical items are unclear after checking sources, you MUST ask
 - For package managers: If the existing sources do not already provide a clue as to what package manager is being used, ask if they use npm, yarn, pnpm, or another tool
